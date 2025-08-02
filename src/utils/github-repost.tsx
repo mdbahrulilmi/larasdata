@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from 'react'
 
-export default function GithubRepos() {
+export default function GithubRepos({username}:{username: string}) {
   const [repos, setRepos] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/github/repos?username=mdbahrulilmi')
+    if (!username) return
+    setLoading(true)
+    fetch(`/api/github/repos?username=${username}`)
       .then((res) => res.json())
       .then((data) => {
         setRepos(data)
@@ -17,7 +19,7 @@ export default function GithubRepos() {
         console.error('Fetch error:', err)
         setLoading(false)
       })
-  }, [])
+  }, [username])
 
   if (loading) return <p>Loading repos...</p>
   if (!repos.length) return <p>Tidak ada repos ditemukan.</p>
