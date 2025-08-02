@@ -6,7 +6,6 @@ import { useSession } from "next-auth/react"
 
 const Sidebar = () => {
     const { data: session, status } = useSession()
-    console.log(session)
     return(
         <div className="w-[240px] h-screen bg-gray-100 p-4 flex flex-col justify-between">
             <div className="space-y-6">
