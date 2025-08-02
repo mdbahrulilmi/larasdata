@@ -1,11 +1,14 @@
 'use client'
 
+import { Session } from "inspector/promises";
+import { signOut } from "next-auth/react";
 import { useState } from "react";
 
-const UserDropDown = () => {
+
+const UserDropDown = ({data}:{data:any}) => {
     const[active,setActive] = useState<boolean>(false);
 
-    const menuItems = ['Account settings', 'Support', 'License', 'Sign Out']
+    const menuItems = ['Account settings', 'Support', 'Sign Out'];
 
     return(
         <div className="relative inline-block text-left">
@@ -18,12 +21,16 @@ const UserDropDown = () => {
             {menuItems.map((item, index)=> {
                 const delay = `delay-[${index * 100}ms]`;
                 const reverseddelay = `delay-[${(menuItems.length - index)* 100}ms]`;
-                
+                const handleClick = () => {
+                    if (item === "Sign Out") {
+                    signOut();
+                    }
+                };
                 return(
                     <a
+                    onClick={handleClick}
                     key={index}
-                    href="#"
-                    className={`block w-full px-4 py-2 text-left text-sm text-gray-700 transform transition-all duration-300 ease-out
+                    className={`block w-full px-4 py-2 text-left text-sm text-gray-700 transform transition-all duration-300 ease-out cursor-pointer hover:bg-gray-200
                         ${active ? `opacity-100 translate-y-0 ${reverseddelay}`: `opacity-0 translate-y-4 ${delay}`}
                         `}
                     >
@@ -38,8 +45,12 @@ const UserDropDown = () => {
             onClick={ () => setActive(!active) }
             className={`transition-all duration-300 ease-out transform rounded-[100px] w-[40px] h-[40px] cursor-pointer
                     ${active? 'scale-110 rotate-180' : 'scale-100 rotate-0'}
-                    bg-[url('/user.png')] bg-cover bg-center
-                    `}>
+                    bg-cover bg-center
+                    `}
+            style={{
+                backgroundImage: `url(${data?.user?.image ?? "/user.png"})`,
+            }}
+            >
             </div>
             <span
                 className={`ml-2 transition-all duration-300 ease-out transform
@@ -48,7 +59,7 @@ const UserDropDown = () => {
                     : 'invisible opacity-0 translate-x-0 delay-[0ms]'
                     } text-left text-sm text-gray-700`}
                 >
-                User
+                {data?.user?.name ?? ''}
             </span>
             </div>
         </div>
