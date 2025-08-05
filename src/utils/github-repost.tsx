@@ -1,17 +1,27 @@
 'use client'
 
+import CardRepos from '@/components/cardrepos'
 import { useEffect, useState } from 'react'
 
-export default function GithubRepos({username}:{username: string}) {
+export default function GithubRepos({ username }: { username: string }) {
   const [repos, setRepos] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     if (!username) return
+
+    const cached = localStorage.getItem(`repos-${username}`)
+    if (cached) {
+      setRepos(JSON.parse(cached))
+      setLoading(false)
+      return
+    }
+
     setLoading(true)
     fetch(`/api/github/repos?username=${username}`)
       .then((res) => res.json())
       .then((data) => {
+        localStorage.setItem(`repos-${username}`, JSON.stringify(data))
         setRepos(data)
         setLoading(false)
       })
@@ -27,15 +37,11 @@ export default function GithubRepos({username}:{username: string}) {
   return (
     <div>
       <h2 className="text-xl font-bold mb-4">Repositories:</h2>
-      <ul className="list-disc pl-6">
+      <div className="grid grid-cols-4 gap-4">
         {repos.map((repo) => (
-          <li key={repo.id}>
-            <a href={repo.html_url} className="text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer">
-              {repo.name}
-            </a>
-          </li>
+          <CardRepos key={repo.id} name={repo.name} url={repo.html_url} language={repo.language} />
         ))}
-      </ul>
+      </div>
     </div>
   )
 }

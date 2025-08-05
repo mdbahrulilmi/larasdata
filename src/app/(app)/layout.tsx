@@ -32,7 +32,7 @@ export default function RootLayout({
         <div className="flex">
         <Sidebar />
         <div className="bg-gray-100 w-full h-screen p-2">
-          <div className="bg-white h-full rounded rounded-xl p-4">
+          <div className="bg-white h-full rounded rounded-xl p-4 overflow-y-scroll">
             {children}
           </div>
         </div>
